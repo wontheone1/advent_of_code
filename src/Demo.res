@@ -1,13 +1,10 @@
-type hairColor<'a> = [> #Black | #Blond | #Ginger] as 'a
-type eyeColor<'a> = [> #Black | #Blue | #Emerald] as 'a
-
 type passport<'a, 'b> = {
   byr: int,
   iyr: int,
   eyr: int,
   hgt: float,
-  hcl: hairColor<'a>,
-  ecl: eyeColor<'b>,
+  hcl: string,
+  ecl: string,
   pid: string,
   cid: option<string>,
 }
@@ -17,8 +14,8 @@ let myPassport = {
   iyr: 2015,
   eyr: 2025,
   hgt: 175.5,
-  hcl: #Black,
-  ecl: #Blue,
+  hcl: "#fffffd",
+  ecl: "#fffffd",
   pid: "860033327",
   cid: None,
 }
