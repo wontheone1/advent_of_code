@@ -12,6 +12,7 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "rescript-test"
   ],
   "warnings": {
     "error" : "+101"

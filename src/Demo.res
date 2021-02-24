@@ -9,6 +9,32 @@ type passport<'a, 'b> = {
   cid: option<string>,
 }
 
+let identity = a => a
+
+let trimLastTwoChar = str => {
+  Js.String.substring(str, ~from=0, ~to_=Js.String2.length(str) - 2)
+}
+
+let heightEncoder = str => {
+  if Js.String2.endsWith(str, "cm") {
+    trimLastTwoChar(str)
+  } else if Js.String2.endsWith(str, "in") {
+    let heightInInch = trimLastTwoChar(str)->float_of_string
+    Js.Float.toString(heightInInch *. 2.54)
+  } else {
+    "invalid"
+  }
+}
+
+let stringEncoder = str => "\"" ++ str ++ "\""
+
+// let passportTypeEncoder: (string, string => string) = Belt.HashMap.String.fromArray([
+//   ("byr", identity),
+//   ("iyr", identity),
+//   ("eyr", identity),
+//   //   ("hgt", ),
+// ])
+
 let myPassport = {
   byr: 1999,
   iyr: 2015,
