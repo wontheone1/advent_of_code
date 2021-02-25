@@ -57,9 +57,9 @@ let encodePassportLine = passportLine => {
   let validatedFields = Belt_Array.map(passportFields, field => {
     switch Belt_HashMapString.get(passportTypeEncoder, field[0]) {
     | None => Error("Invalid prop " ++ field[0])
-    | Some(fn) =>
-      switch fn(field[1]) {
-      | Ok(value) => Ok("\"" ++ field[0] ++ "\"" ++ ":" ++ value)
+    | Some(encoderFn) =>
+      switch encoderFn(field[1]) {
+      | Ok(value) => Ok((field[0], value))
       | Error(msg) => Error(msg)
       }
     }
