@@ -29,3 +29,16 @@ test("cidEncoder", () => {
   stringResultEqual(Ok("12345"), Demo.cidEncoder("12345"))
   stringResultEqual(Error("Empty CID"), Demo.cidEncoder("    "))
 })
+
+test("parsePassportLine", () => {
+  stringResultEqual(
+    Ok("{\"ecl\":gry,\"pid\":860033327,\"eyr\":2020,\"hcl\":#fffffd,\"byr\":1937,\"iyr\":2017,\"cid\":147,\"hgt\":183}"),
+    Demo.parsePassportLine("ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+byr:1937 iyr:2017 cid:147 hgt:183cm"),
+  )
+  stringResultEqual(
+    Ok("{\"iyr\":2013,\"ecl\":amb,\"cid\":350,\"eyr\":2023,\"pid\":028048884,\"hcl\":#cfa07d,\"byr\":1929}"),
+    Demo.parsePassportLine("iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
+hcl:#cfa07d byr:1929"),
+  )
+})

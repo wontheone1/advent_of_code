@@ -11,7 +11,7 @@ type passport<'a, 'b> = {
   cid: option<string>,
 }
 
-let identity = a => a
+let wrapInOk: string => Belt.Result.t<string, string> = a => Ok(a)
 
 let cidEncoder = str => {
   if Js.Re.test_(%re("/^\s*$/"), str) {
@@ -46,12 +46,16 @@ let hclEncoder: string => Belt.Result.t<string, string> = str => {
 
 let stringEncoder = str => "\"" ++ str ++ "\""
 
-// let passportTypeEncoder: (string, string => string) = Belt.HashMap.String.fromArray([
-//   ("byr", identity),
-//   ("iyr", identity),
-//   ("eyr", identity),
-//   //   ("hgt", ),
-// ])
+let passportTypeEncoder = Belt.HashMap.String.fromArray([
+  ("byr", wrapInOk),
+  ("iyr", wrapInOk),
+  ("eyr", wrapInOk),
+  ("hgt", heightEncoder),
+  ("hcl", hclEncoder),
+  ("ecl", wrapInOk),
+  ("pid", wrapInOk),
+  ("cid", cidEncoder),
+])
 
 let myPassport = {
   byr: 1999,
@@ -66,7 +70,7 @@ let myPassport = {
 
 let validPassports = list{myPassport}
 
-let passportLines = "ecl:gry pid:860033327 eyr:2020 hcl:#fffff
+let passportLines = "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
 byr:1937 iyr:2017 cid:147 hgt:183cm
 
 iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
@@ -90,9 +94,37 @@ let parsePassportLine = passportLine => {
     | Some(field) => Js.String2.split(field, ":")
     }
   })
-  Js.log(passportFields)
+
+  let validatedFields = Belt_Array.map(passportFields, field => {
+    switch Belt_HashMapString.get(passportTypeEncoder, field[0]) {
+    | None => Error("Invalid prop " ++ field[0])
+    | Some(fn) =>
+      switch fn(field[1]) {
+      | Ok(value) => Ok("\"" ++ field[0] ++ "\"" ++ ":" ++ value)
+      | Error(msg) => Error(msg)
+      }
+    }
+  })
+
+  let passportJSONBuillder = Belt_Array.reduce(validatedFields, Ok("{"), (acc, field) => {
+    switch acc {
+    | Ok(acc) =>
+      switch field {
+      | Ok(field) => Ok(acc ++ field ++ ",")
+      | Error(msg) => Error(msg)
+      }
+    | Error(msg) => Error(msg)
+    }
+  })
+
+  let passportJSON = switch passportJSONBuillder {
+  | Ok(passportJSONBuillder) => Ok(Js.String2.replaceByRe(passportJSONBuillder, %re("/,$/"), "}"))
+  | Error(msg) => Error(msg)
+  }
+
+  passportJSON
 }
 
-parsePassportLine(Belt.Option.getWithDefault(passports[0], ""))
+parsePassportLine(Belt.Option.getWithDefault(passports[0], ""))->ignore
 
 Js.log("Number of valid passports are: " ++ string_of_int(Belt_List.length(validPassports)))
