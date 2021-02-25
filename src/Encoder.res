@@ -46,6 +46,10 @@ let passportTypeEncoder = Belt.HashMap.String.fromArray([
   ("cid", cidEncoder),
 ])
 
+let singleJSONProperty = ((key, value)) => {
+  "\"" ++ key ++ "\"" ++ ":" ++ value
+}
+
 let encodePassportLine = passportLine => {
   let passportFields = Js.String2.splitByRe(passportLine, %re("/\s/"))->Belt_Array.map(field => {
     switch field {
@@ -69,7 +73,7 @@ let encodePassportLine = passportLine => {
     switch acc {
     | Ok(acc) =>
       switch field {
-      | Ok(field) => Ok(acc ++ field ++ ",")
+      | Ok(field) => Ok(acc ++ singleJSONProperty(field) ++ ",")
       | Error(msg) => Error(msg)
       }
     | Error(msg) => Error(msg)
