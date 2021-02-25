@@ -18,3 +18,9 @@ test("heightEncoder", () => {
   stringResultEqual(Ok("134.62"), Demo.heightEncoder("53in"))
   stringResultEqual(Error("invalid height"), Demo.heightEncoder("hello"))
 })
+
+test("hclEncoder", () => {
+  stringResultEqual(Ok("#123456"), Demo.hclEncoder("#123456"))
+  stringResultEqual(Error("invalid hexa color code"), Demo.hclEncoder("533333"))
+  stringResultEqual(Error("invalid hexa color code"), Demo.hclEncoder("#123"))
+})

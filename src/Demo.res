@@ -17,7 +17,7 @@ let trimLastTwoChar = str => {
   Js.String.substring(str, ~from=0, ~to_=Js.String2.length(str) - 2)
 }
 
-let heightEncoder = str => {
+let heightEncoder: string => Belt.Result.t<string, string> = str => {
   if Js.String2.endsWith(str, "cm") {
     Ok(trimLastTwoChar(str))
   } else if Js.String2.endsWith(str, "in") {
@@ -25,6 +25,14 @@ let heightEncoder = str => {
     Ok(Js.Float.toString(heightInInch *. 2.54))
   } else {
     Error("invalid height")
+  }
+}
+
+let hclEncoder: string => Belt.Result.t<string, string> = str => {
+  if Js.String2.startsWith(str, "#") && 7 == Js.String2.length(str) {
+    Ok(str)
+  } else {
+    Error("invalid hexa color code")
   }
 }
 
