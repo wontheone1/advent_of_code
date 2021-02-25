@@ -1,6 +1,5 @@
 open Belt.Result
 
-
 let cidEncoder = str => {
   if Js.Re.test_(%re("/^\s*$/"), str) {
     Error("Empty CID")
@@ -8,7 +7,6 @@ let cidEncoder = str => {
     Ok(str)
   }
 }
-
 
 let hclEncoder: string => Belt.Result.t<string, string> = str => {
   if Js.String2.startsWith(str, "#") && 7 == Js.String2.length(str) {
@@ -33,7 +31,6 @@ let heightEncoder: string => Belt.Result.t<string, string> = str => {
   }
 }
 
-
 let stringEncoder = str => "\"" ++ str ++ "\""
 
 let wrapInOk: string => Belt.Result.t<string, string> = a => Ok(a)
@@ -48,7 +45,6 @@ let passportTypeEncoder = Belt.HashMap.String.fromArray([
   ("pid", wrapInOk),
   ("cid", cidEncoder),
 ])
-
 
 let encodePassportLine = passportLine => {
   let passportFields = Js.String2.splitByRe(passportLine, %re("/\s/"))->Belt_Array.map(field => {
@@ -86,4 +82,14 @@ let encodePassportLine = passportLine => {
   }
 
   passportJSON
+}
+
+let encodePassports = passportLines => {
+  let passports = Js.String2.splitByRe(passportLines, %re("/\\n{2}/"))
+  Belt_Array.map(passports, maybePassport => {
+    switch maybePassport {
+    | None => Error("No passport found")
+    | Some(passport) => encodePassportLine(Js.String2.trim(passport))
+    }
+  })
 }

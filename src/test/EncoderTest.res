@@ -11,7 +11,13 @@ let stringResultEqual = (
   ~message=?,
   a: Belt.Result.t<string, string>,
   b: Belt.Result.t<string, string>,
-) => assertion(~message?, ~operator="stringEqual", (a, b) => a == b, a, b)
+) => assertion(~message?, ~operator="stringResultEqual", (a, b) => a == b, a, b)
+
+let stringResultArrayEqual = (
+  ~message=?,
+  a: array<Belt.Result.t<string, string>>,
+  b: array<Belt.Result.t<string, string>>,
+) => assertion(~message?, ~operator="stringResultArrayEqual", (a, b) => a == b, a, b)
 
 test("heightEncoder", () => {
   stringResultEqual(Ok("178"), Encoder.heightEncoder("178cm"))
@@ -30,7 +36,7 @@ test("cidEncoder", () => {
   stringResultEqual(Error("Empty CID"), Encoder.cidEncoder("    "))
 })
 
-test("parsePassportLine", () => {
+test("encodePassportLine", () => {
   stringResultEqual(
     Ok(
       "{\"ecl\":gry,\"pid\":860033327,\"eyr\":2020,\"hcl\":#fffffd,\"byr\":1937,\"iyr\":2017,\"cid\":147,\"hgt\":183}",
@@ -44,5 +50,47 @@ byr:1937 iyr:2017 cid:147 hgt:183cm"),
     ),
     Encoder.encodePassportLine("iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
 hcl:#cfa07d byr:1929"),
+  )
+})
+
+test("encodePassports", () => {
+  stringResultArrayEqual(
+    [
+      Ok(
+        "{\"ecl\":gry,\"pid\":860033327,\"eyr\":2020,\"hcl\":#fffffd,\"byr\":1937,\"iyr\":2017,\"cid\":147,\"hgt\":183}",
+      ),
+    ],
+    Encoder.encodePassports("ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+byr:1937 iyr:2017 cid:147 hgt:183cm"),
+  )
+  stringResultArrayEqual(
+    [
+      Ok(
+        "{\"ecl\":gry,\"pid\":860033327,\"eyr\":2020,\"hcl\":#fffffd,\"byr\":1937,\"iyr\":2017,\"cid\":147,\"hgt\":183}",
+      ),
+      Ok(
+        "{\"iyr\":2013,\"ecl\":amb,\"cid\":350,\"eyr\":2023,\"pid\":028048884,\"hcl\":#cfa07d,\"byr\":1929}",
+      ),
+      Ok(
+        "{\"hcl\":#ae17e1,\"iyr\":2013,\"eyr\":2024,\"ecl\":brn,\"pid\":760753108,\"byr\":1931,\"hgt\":179}",
+      ),
+      Ok(
+        "{\"hcl\":#cfa07d,\"eyr\":2025,\"pid\":166559648,\"iyr\":2011,\"ecl\":brn,\"hgt\":149.86}",
+      ),
+    ],
+    Encoder.encodePassports("ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
+byr:1937 iyr:2017 cid:147 hgt:183cm
+
+iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
+hcl:#cfa07d byr:1929
+
+hcl:#ae17e1 iyr:2013
+eyr:2024
+ecl:brn pid:760753108 byr:1931
+hgt:179cm
+
+hcl:#cfa07d eyr:2025 pid:166559648
+iyr:2011 ecl:brn hgt:59in
+"),
   )
 })
