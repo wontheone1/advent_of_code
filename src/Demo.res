@@ -87,7 +87,7 @@ iyr:2011 ecl:brn hgt:59in
 
 let passports = Js.String2.splitByRe(passportLines, %re("/\\n{2}/"))
 
-let parsePassportLine = passportLine => {
+let encodePassportLine = passportLine => {
   let passportFields = Js.String2.splitByRe(passportLine, %re("/\s/"))->Belt_Array.map(field => {
     switch field {
     | None => []
@@ -125,6 +125,6 @@ let parsePassportLine = passportLine => {
   passportJSON
 }
 
-parsePassportLine(Belt.Option.getWithDefault(passports[0], ""))->ignore
+encodePassportLine(Belt.Option.getWithDefault(passports[0], ""))->ignore
 
 Js.log("Number of valid passports are: " ++ string_of_int(Belt_List.length(validPassports)))
