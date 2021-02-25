@@ -1,3 +1,5 @@
+open Belt.Result
+
 type passport<'a, 'b> = {
   byr: int,
   iyr: int,
@@ -17,12 +19,12 @@ let trimLastTwoChar = str => {
 
 let heightEncoder = str => {
   if Js.String2.endsWith(str, "cm") {
-    trimLastTwoChar(str)
+    Ok(trimLastTwoChar(str))
   } else if Js.String2.endsWith(str, "in") {
     let heightInInch = trimLastTwoChar(str)->float_of_string
-    Js.Float.toString(heightInInch *. 2.54)
+    Ok(Js.Float.toString(heightInInch *. 2.54))
   } else {
-    "invalid"
+    Error("invalid height")
   }
 }
 
