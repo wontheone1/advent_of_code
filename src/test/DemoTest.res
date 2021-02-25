@@ -24,3 +24,8 @@ test("hclEncoder", () => {
   stringResultEqual(Error("invalid hexa color code"), Demo.hclEncoder("533333"))
   stringResultEqual(Error("invalid hexa color code"), Demo.hclEncoder("#123"))
 })
+
+test("cidEncoder", () => {
+  stringResultEqual(Ok("12345"), Demo.cidEncoder("12345"))
+  stringResultEqual(Error("Empty CID"), Demo.cidEncoder("    "))
+})

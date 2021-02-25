@@ -13,6 +13,14 @@ type passport<'a, 'b> = {
 
 let identity = a => a
 
+let cidEncoder = str => {
+  if Js.Re.test_(%re("/^\s*$/"), str) {
+    Error("Empty CID")
+  } else {
+    Ok(str)
+  }
+}
+
 let trimLastTwoChar = str => {
   Js.String.substring(str, ~from=0, ~to_=Js.String2.length(str) - 2)
 }
