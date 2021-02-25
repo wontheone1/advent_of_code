@@ -4,13 +4,13 @@ let cidEncoder = str => {
   if Js.Re.test_(%re("/^\s*$/"), str) {
     Error("Empty CID")
   } else {
-    Ok(str)
+    Ok("\"" ++ str ++ "\"")
   }
 }
 
 let hclEncoder: string => Belt.Result.t<string, string> = str => {
   if Js.String2.startsWith(str, "#") && 7 == Js.String2.length(str) {
-    Ok(str)
+    Ok("\"" ++ str ++ "\"")
   } else {
     Error("invalid hexa color code")
   }
@@ -31,18 +31,18 @@ let heightEncoder: string => Belt.Result.t<string, string> = str => {
   }
 }
 
-let stringEncoder = str => "\"" ++ str ++ "\""
+let stringEncoder = str => Ok("\"" ++ str ++ "\"")
 
-let wrapInOk: string => Belt.Result.t<string, string> = a => Ok(a)
+let numericEncoder: string => Belt.Result.t<string, string> = a => Ok(a)
 
 let passportTypeEncoder = Belt.HashMap.String.fromArray([
-  ("byr", wrapInOk),
-  ("iyr", wrapInOk),
-  ("eyr", wrapInOk),
+  ("byr", numericEncoder),
+  ("iyr", numericEncoder),
+  ("eyr", numericEncoder),
   ("hgt", heightEncoder),
   ("hcl", hclEncoder),
-  ("ecl", wrapInOk),
-  ("pid", wrapInOk),
+  ("ecl", stringEncoder),
+  ("pid", stringEncoder),
   ("cid", cidEncoder),
 ])
 
