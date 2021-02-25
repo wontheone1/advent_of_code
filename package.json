@@ -5,7 +5,11 @@
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
     "start": "bsb -make-world -w",
-    "test": "retest src/**/*.bs.js"
+    "test": "retest src/**/*.bs.js",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "test": "src/**/*.bs.js"
   },
   "keywords": [
     "rescript"
@@ -14,6 +18,7 @@
   "license": "MIT",
   "devDependencies": {
     "bs-platform": "*",
-    "rescript-test": "^0.6.3"
+    "rescript-test": "^0.6.3",
+    "npm-watch": "^0.7.0"
   }
 }
