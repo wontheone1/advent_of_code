@@ -1,18 +1,25 @@
 open Belt.Result
 
+type encodingErrors =
+  | EmptyCID
+  | InvalidHexaColorCode
+  | InvalidHeight
+  | UnknownProp(string)
+  | NoPassportFromInputLines
+
 let cidEncoder = str => {
   if Js.Re.test_(%re("/^\s*$/"), str) {
-    Error("Empty CID")
+    Error(EmptyCID)
   } else {
     Ok("\"" ++ str ++ "\"")
   }
 }
 
-let hclEncoder: string => Belt.Result.t<string, string> = str => {
+let hclEncoder: string => Belt.Result.t<string, encodingErrors> = str => {
   if Js.String2.startsWith(str, "#") && 7 == Js.String2.length(str) {
     Ok("\"" ++ str ++ "\"")
   } else {
-    Error("invalid hexa color code")
+    Error(InvalidHexaColorCode)
   }
 }
 
@@ -20,20 +27,20 @@ let trimLastTwoChar = str => {
   Js.String.substring(str, ~from=0, ~to_=Js.String2.length(str) - 2)
 }
 
-let heightEncoder: string => Belt.Result.t<string, string> = str => {
+let heightEncoder: string => Belt.Result.t<string, encodingErrors> = str => {
   if Js.String2.endsWith(str, "cm") {
     Ok(trimLastTwoChar(str))
   } else if Js.String2.endsWith(str, "in") {
     let heightInInch = trimLastTwoChar(str)->float_of_string
     Ok(Js.Float.toString(heightInInch *. 2.54))
   } else {
-    Error("invalid height")
+    Error(InvalidHeight)
   }
 }
 
 let stringEncoder = str => Ok("\"" ++ str ++ "\"")
 
-let numericEncoder: string => Belt.Result.t<string, string> = a => Ok(a)
+let numericEncoder: string => Belt.Result.t<string, encodingErrors> = a => Ok(a)
 
 let passportTypeEncoder = Belt.HashMap.String.fromArray([
   ("byr", numericEncoder),
@@ -60,7 +67,7 @@ let encodePassportLine = passportLine => {
 
   let validatedFields = Belt_Array.map(passportFields, field => {
     switch Belt_HashMapString.get(passportTypeEncoder, field[0]) {
-    | None => Error("Invalid prop " ++ field[0])
+    | None => Error(UnknownProp(field[0]))
     | Some(encoderFn) =>
       switch encoderFn(field[1]) {
       | Ok(value) => Ok((field[0], value))
@@ -92,7 +99,7 @@ let encodePassports = passportLines => {
   let passports = Js.String2.splitByRe(passportLines, %re("/\\n{2}/"))
   Belt_Array.map(passports, maybePassport => {
     switch maybePassport {
-    | None => Error("No passport found")
+    | None => Error(NoPassportFromInputLines)
     | Some(passport) => encodePassportLine(Js.String2.trim(passport))
     }
   })

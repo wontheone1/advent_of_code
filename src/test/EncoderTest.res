@@ -9,31 +9,31 @@ let stringEqual = (~message=?, a: string, b: string) =>
 
 let stringResultEqual = (
   ~message=?,
-  a: Belt.Result.t<string, string>,
-  b: Belt.Result.t<string, string>,
+  a: Belt.Result.t<string, Encoder.encodingErrors>,
+  b: Belt.Result.t<string, Encoder.encodingErrors>,
 ) => assertion(~message?, ~operator="stringResultEqual", (a, b) => a == b, a, b)
 
 let stringResultArrayEqual = (
   ~message=?,
-  a: array<Belt.Result.t<string, string>>,
-  b: array<Belt.Result.t<string, string>>,
+  a: array<Belt.Result.t<string, Encoder.encodingErrors>>,
+  b: array<Belt.Result.t<string, Encoder.encodingErrors>>,
 ) => assertion(~message?, ~operator="stringResultArrayEqual", (a, b) => a == b, a, b)
 
 test("heightEncoder", () => {
   stringResultEqual(Ok("178"), Encoder.heightEncoder("178cm"))
   stringResultEqual(Ok("134.62"), Encoder.heightEncoder("53in"))
-  stringResultEqual(Error("invalid height"), Encoder.heightEncoder("hello"))
+  stringResultEqual(Error(Encoder.InvalidHeight), Encoder.heightEncoder("hello"))
 })
 
 test("hclEncoder", () => {
   stringResultEqual(Ok("\"#123456\""), Encoder.hclEncoder("#123456"))
-  stringResultEqual(Error("invalid hexa color code"), Encoder.hclEncoder("533333"))
-  stringResultEqual(Error("invalid hexa color code"), Encoder.hclEncoder("#123"))
+  stringResultEqual(Error(Encoder.InvalidHexaColorCode), Encoder.hclEncoder("533333"))
+  stringResultEqual(Error(Encoder.InvalidHexaColorCode), Encoder.hclEncoder("#123"))
 })
 
 test("cidEncoder", () => {
   stringResultEqual(Ok("\"12345\""), Encoder.cidEncoder("12345"))
-  stringResultEqual(Error("Empty CID"), Encoder.cidEncoder("    "))
+  stringResultEqual(Error(Encoder.EmptyCID), Encoder.cidEncoder("    "))
 })
 
 test("encodePassportLine", () => {
