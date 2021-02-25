@@ -1,26 +1,4 @@
-type passport<'a, 'b> = {
-  byr: int,
-  iyr: int,
-  eyr: int,
-  hgt: float,
-  hcl: string,
-  ecl: string,
-  pid: string,
-  cid: option<string>,
-}
-
-let myPassport = {
-  byr: 1999,
-  iyr: 2015,
-  eyr: 2025,
-  hgt: 175.5,
-  hcl: "#fffffd",
-  ecl: "#fffffd",
-  pid: "860033327",
-  cid: None,
-}
-
-let validPassports = list{myPassport}
+let log = Js.log
 
 let passportLines = "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
 byr:1937 iyr:2017 cid:147 hgt:183cm
@@ -37,6 +15,14 @@ hcl:#cfa07d eyr:2025 pid:166559648
 iyr:2011 ecl:brn hgt:59in
 "
 
-let passports = Js.String2.splitByRe(passportLines, %re("/\\n{2}/"))
+let passportsEncoded = Encoder.encodePassports(passportLines)
 
-Js.log("Number of valid passports are: " ++ string_of_int(Belt_List.length(validPassports)))
+switch passportsEncoded[0] {
+| Ok(passport) => {
+  let passport = Parser.parsePassport(passport)
+  log(passport) 
+}
+| Error(_) => log("error")
+}
+
+Js.log("Number of valid passports are: " ++ string_of_int(Belt_List.length(list{})))
