@@ -126,3 +126,12 @@ let parsePassport = (passport: Js.Json.t): Belt.Result.t<passport, parseError> =
   | _ => Result.Error(ObjectDecodingFailure)
   }
 }
+
+let parsePassports = (passports: string): Belt.Result.t<list<passport>, parseError> => {
+  let passports = Js.Json.parseExn(passports)
+  switch Js.Json.classify(passports) {
+  | Js.Json.JSONArray(array) =>
+    Ok(array->Belt_Array.keepMap(passport => passport->parsePassport->toOption)->Belt_List.fromArray)
+  | _ => Error(RootArrayParsingFailure)
+  }
+}
