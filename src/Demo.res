@@ -17,12 +17,12 @@ iyr:2011 ecl:brn hgt:59in
 
 let passportsEncoded = Encoder.encodePassports(passportLines)
 
-switch passportsEncoded[0] {
-| Ok(passport) => {
-  let passport = Parser.parsePassport(passport)
-  log(passport) 
-}
-| Error(_) => log("error")
-}
+let passports =
+  Parser.parsePassports(
+    Belt.Result.getWithDefault(passportsEncoded, ""),
+  )->Belt_Result.getWithDefault(list{})
 
-Js.log("Number of valid passports are: " ++ string_of_int(Belt_List.length(list{})))
+log(passportsEncoded)
+log(passports)
+
+log("Number of valid passports are: " ++ string_of_int(Belt_List.length(passports)))
