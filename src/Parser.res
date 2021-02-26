@@ -20,18 +20,6 @@ type parseError =
   | StringTypeError(string)
   | PropertyNotFound(string)
 
-let toResult = (opt: option<'a>, err: 'b): Result.t<'a, 'b> =>
-  switch opt {
-  | None => Result.Error(err)
-  | Some(x) => Result.Ok(x)
-  }
-
-let toOption = (result: Result.t<'t, 'e>): option<'t> =>
-  switch result {
-  | Error(_) => None
-  | Ok(x) => Some(x)
-  }
-
 let mapTogether = (
   first: Result.t<'a, 'error>,
   second: Result.t<'b, 'error>,
@@ -56,21 +44,21 @@ let optional = (
 ): Result.t<'t, parseError> =>
   switch t {
   | Error(_) => t
-  | Ok(obj) => Ok(update(obj, toOption(decoder(dict, prop))))
+  | Ok(obj) => Ok(update(obj, OptionResult.toOption(decoder(dict, prop))))
   }
 
 let getProp = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<Js.Json.t, parseError> =>
-  Js.Dict.get(dict, prop)->toResult(PropertyNotFound(prop))
+  Js.Dict.get(dict, prop)->OptionResult.toResult(PropertyNotFound(prop))
 
 let numberDecoder = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<float, parseError> =>
   getProp(dict, prop)
   ->Result.map(json => Js.Json.decodeNumber(json))
-  ->Result.flatMap(op => toResult(op, NumberTypeError(prop)))
+  ->Result.flatMap(op => OptionResult.toResult(op, NumberTypeError(prop)))
 
 let stringDecoder = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<string, parseError> =>
   getProp(dict, prop)
   ->Result.map(json => Js.Json.decodeString(json))
-  ->Result.flatMap(opt => toResult(opt, StringTypeError(prop)))
+  ->Result.flatMap(opt => OptionResult.toResult(opt, StringTypeError(prop)))
 
 let initialPassport: passport = {
   byr: 0,
@@ -131,7 +119,11 @@ let parsePassports = (passports: string): Belt.Result.t<list<passport>, parseErr
   let passports = Js.Json.parseExn(passports)
   switch Js.Json.classify(passports) {
   | Js.Json.JSONArray(array) =>
-    Ok(array->Belt_Array.keepMap(passport => passport->parsePassport->toOption)->Belt_List.fromArray)
+    Ok(
+      array
+      ->Belt_Array.keepMap(passport => passport->parsePassport->OptionResult.toOption)
+      ->Belt_List.fromArray,
+    )
   | _ => Error(RootArrayParsingFailure)
   }
 }
