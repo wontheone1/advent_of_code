@@ -15,6 +15,7 @@ type passport = {
 
 type parseError =
   | ObjectDecodingFailure
+  | NumberTypeError(string)
   | StringTypeError(string)
   | PropertyNotFound(string)
 
@@ -60,6 +61,11 @@ let optional = (
 let getProp = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<Js.Json.t, parseError> =>
   Js.Dict.get(dict, prop)->toResult(PropertyNotFound(prop))
 
+let numberDecoder = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<float, parseError> =>
+  getProp(dict, prop)
+  ->Result.map(json => Js.Json.decodeNumber(json))
+  ->Result.flatMap(op => toResult(op, NumberTypeError(prop)))
+
 let stringDecoder = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<string, parseError> =>
   getProp(dict, prop)
   ->Result.map(json => Js.Json.decodeString(json))
@@ -81,6 +87,22 @@ let parsePassport = (passport: string): Belt.Result.t<passport, parseError> => {
   switch Js.Json.classify(passport) {
   | Js.Json.JSONObject(dict) =>
     Belt.Result.Ok(initialPassport)
+    ->required("byr", numberDecoder, dict, (obj, byr) => {
+      ...obj,
+      byr: int_of_float(byr),
+    })
+    ->required("iyr", numberDecoder, dict, (obj, iyr) => {
+      ...obj,
+      iyr: int_of_float(iyr),
+    })
+    ->required("eyr", numberDecoder, dict, (obj, eyr) => {
+      ...obj,
+      eyr: int_of_float(eyr),
+    })
+    ->required("hgt", numberDecoder, dict, (obj, hgt) => {
+      ...obj,
+      hgt: hgt,
+    })
     ->required("hcl", stringDecoder, dict, (obj, hcl) => {
       ...obj,
       hcl: hcl,
