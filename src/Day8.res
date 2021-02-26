@@ -29,7 +29,7 @@ let instructionFromInstructionTuple = ((instruction, arg)) => {
   }
 }
 
-let instructionsFromInstructionLines = instructionLines => {
+let parseInstructions = instructionLines => {
   Js.String2.splitByRe(instructionLines, %re("/\\n/"))
   ->ArrayUtil.removeNones
   ->Array.map(instructionLine => {
@@ -45,12 +45,6 @@ let instructionsFromInstructionLines = instructionLines => {
     | Some(instruction) => instruction
     }
   })
-}
-
-let parseInstructions = instructionLines => {
-  let instructions = instructionsFromInstructionLines(instructionLines)
-
-  instructions
 }
 
 log(parseInstructions(instructionLines))
