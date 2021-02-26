@@ -97,10 +97,27 @@ let encodePassportLine = passportLine => {
 
 let encodePassports = passportLines => {
   let passports = Js.String2.splitByRe(passportLines, %re("/\\n{2}/"))
-  Belt_Array.map(passports, maybePassport => {
-    switch maybePassport {
-    | None => Error(NoPassportFromInputLines)
-    | Some(passport) => encodePassportLine(Js.String2.trim(passport))
+  let passportsJSONBuilder = Belt_Array.reduce(passports, Ok("["), (passports, passport) => {
+    switch passports {
+    | Error(_) => passports
+    | Ok(acc) =>
+      switch passport {
+      | None => Error(NoPassportFromInputLines)
+      | Some(passport) => {
+          let passportEncoded = encodePassportLine(Js.String2.trim(passport))
+          switch passportEncoded {
+          | Error(e) => Error(e)
+          | Ok(passportEncoded) => Ok(acc ++ passportEncoded ++ ",")
+          }
+        }
+      }
     }
   })
+
+  let passportJSON = switch passportsJSONBuilder {
+  | Ok(passportsJSONBuilder) => Ok(Js.String2.replaceByRe(passportsJSONBuilder, %re("/,$/"), "]"))
+  | Error(_) => passportsJSONBuilder
+  }
+
+  passportJSON
 }
