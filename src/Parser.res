@@ -35,6 +35,12 @@ let toResult = (opt: option<'a>, err: 'b): Result.t<'a, 'b> =>
   | Some(x) => Result.Ok(x)
   }
 
+let toOption = (result: Result.t<'t, 'e>): option<'t> =>
+  switch result {
+  | Error(_) => None
+  | Ok(x) => Some(x)
+  }
+
 let mapTogether = (
   first: Result.t<'a, 'error>,
   second: Result.t<'b, 'error>,
@@ -49,6 +55,18 @@ let required = (
   dict: Js.Dict.t<Js.Json.t>,
   update: ('t, 'prop) => 't,
 ): Result.t<'t, parseError> => mapTogether(t, decoder(dict, prop), update)
+
+let optional = (
+  t: Result.t<'t, parseError>,
+  prop: string,
+  decoder: (Js.Dict.t<Js.Json.t>, string) => Result.t<'prop, parseError>,
+  dict: Js.Dict.t<Js.Json.t>,
+  update: ('t, option<'prop>) => 't,
+): Result.t<'t, parseError> =>
+  switch t {
+  | Error(_) => t
+  | Ok(obj) => Ok(update(obj, toOption(decoder(dict, prop))))
+  }
 
 let getProp = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<Js.Json.t, parseError> =>
   Js.Dict.get(dict, prop)->toResult(PropertyNotFound(prop))
@@ -90,9 +108,9 @@ let parsePassport = (passport: string): Belt.Result.t<passport, parseError> => {
       ...obj,
       pid: pid,
     })
-    ->required("cid", stringDecoder, dict, (obj, cid) => {
+    ->optional("cid", stringDecoder, dict, (obj, cid) => {
       ...obj,
-      cid: Some(cid),
+      cid: cid,
     })
   | _ => Result.Error(ObjectDecodingFailure)
   }
