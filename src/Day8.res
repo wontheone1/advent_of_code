@@ -19,6 +19,13 @@ type instructionKind =
   | Accumulate(int)
   | Jump(int)
 
+type appState = {
+  isFinished: bool,
+  accumulator: int,
+  currentInstructionIndex: int,
+  numberOfInstructionsVisited: array<int>,
+}
+
 let instructionFromInstructionTuple = ((instruction, arg)) => {
   let arg = int_of_string(arg)
   switch instruction {
@@ -47,4 +54,99 @@ let parseInstructions = instructionLines => {
   })
 }
 
+let instructions = parseInstructions(instructionLines)
+
+let initialState: appState = {
+  isFinished: false,
+  accumulator: 0,
+  currentInstructionIndex: 0,
+  numberOfInstructionsVisited: Array.make(Array.length(instructions), 0),
+}
+
+let rec runInstruction = (appState, instructions) => {
+  if appState.isFinished {
+    appState
+  } else {
+    let instructionToRun = instructions[appState.currentInstructionIndex]
+    switch instructionToRun {
+    | None => {
+        ...appState,
+        isFinished: true,
+      }
+    | Some(instruction) => {
+        let numberOfCurrentInstructionVisited = Option.getWithDefault(
+          appState.numberOfInstructionsVisited[appState.currentInstructionIndex],
+          0,
+        )
+        if numberOfCurrentInstructionVisited > 0 {
+          {
+            ...appState,
+            isFinished: true,
+          }
+        } else {
+          switch instruction {
+          | NoOp => {
+              ignore(
+                appState.numberOfInstructionsVisited[
+                  appState.currentInstructionIndex
+                ] =
+                  numberOfCurrentInstructionVisited + 1,
+              )
+              runInstruction(
+                {
+                  ...appState,
+                  currentInstructionIndex: appState.currentInstructionIndex + 1,
+                },
+                instructions,
+              )
+            }
+
+          | Accumulate(arg) => {
+              ignore(
+                appState.numberOfInstructionsVisited[
+                  appState.currentInstructionIndex
+                ] =
+                  numberOfCurrentInstructionVisited + 1,
+              )
+              runInstruction(
+                {
+                  ...appState,
+                  currentInstructionIndex: appState.currentInstructionIndex + 1,
+                  accumulator: appState.accumulator + arg,
+                },
+                instructions,
+              )
+            }
+
+          | Jump(arg) => {
+              ignore(
+                appState.numberOfInstructionsVisited[
+                  appState.currentInstructionIndex
+                ] =
+                  numberOfCurrentInstructionVisited + 1,
+              )
+              runInstruction(
+                {
+                  ...appState,
+                  currentInstructionIndex: appState.currentInstructionIndex + arg,
+                },
+                instructions,
+              )
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+let printAccumulatorBeforeAnyInstructionIsExecutedForSecondTime = appState =>
+  log("The value immediately before any instruction is executed for the second time is: " ++ string_of_int(appState.accumulator))
+
 log(parseInstructions(instructionLines))
+log(initialState)
+
+let finalState = runInstruction(initialState, instructions)
+
+log(finalState)
+printAccumulatorBeforeAnyInstructionIsExecutedForSecondTime(finalState)
