@@ -1,9 +1,5 @@
 open Belt
 
-exception InvalidInstruction
-
-let log = Js.log
-
 let instructionLines = "nop +0
 acc +1
 jmp +4
@@ -14,7 +10,26 @@ acc +1
 jmp -4
 acc +6"
 
-let instructionTuplesFromInstructionLines = instructionLines => {
+exception InvalidInstruction
+
+let log = Js.log
+
+type instructionKind =
+  | NoOp
+  | Accumulate(int)
+  | Jump(int)
+
+let instructionFromInstructionTuple = ((instruction, arg)) => {
+  let arg = int_of_string(arg)
+  switch instruction {
+  | "nop" => NoOp
+  | "acc" => Accumulate(arg)
+  | "jmp" => Jump(arg)
+  | _ => raise(InvalidInstruction)
+  }
+}
+
+let instructionsFromInstructionLines = instructionLines => {
   Js.String2.splitByRe(instructionLines, %re("/\\n/"))
   ->ArrayUtil.removeNones
   ->Array.map(instructionLine => {
@@ -23,19 +38,19 @@ let instructionTuplesFromInstructionLines = instructionLines => {
       raise(InvalidInstruction)
     }
     let maybeOpArg = Option.flatMap(instruction[0], op =>
-      Option.map(instruction[1], arg => (op, arg))
+      Option.map(instruction[1], arg => instructionFromInstructionTuple((op, arg)))
     )
     switch maybeOpArg {
     | None => raise(InvalidInstruction)
-    | Some((op, arg)) => (op, arg)
+    | Some(instruction) => instruction
     }
   })
 }
 
 let parseInstructions = instructionLines => {
-  let instructionTuples = instructionTuplesFromInstructionLines(instructionLines)
-  
-  instructionTuples
+  let instructions = instructionsFromInstructionLines(instructionLines)
+
+  instructions
 }
 
 log(parseInstructions(instructionLines))
