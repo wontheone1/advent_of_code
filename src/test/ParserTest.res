@@ -19,7 +19,9 @@ test("Parse passport successfully", () => {
       cid: Some("147"),
     }),
     Parser.parsePassport(
-      "{\"ecl\":\"gry\",\"pid\":\"860033327\",\"eyr\":2020,\"hcl\":\"#fffffd\",\"byr\":1937,\"iyr\":2017,\"cid\":\"147\",\"hgt\":183}",
+      Js.Json.parseExn(
+        "{\"ecl\":\"gry\",\"pid\":\"860033327\",\"eyr\":2020,\"hcl\":\"#fffffd\",\"byr\":1937,\"iyr\":2017,\"cid\":\"147\",\"hgt\":183}",
+      ),
     ),
   )
 })
@@ -37,7 +39,9 @@ test("Parse passport successfully when cid does NOT exist", () => {
       cid: None,
     }),
     Parser.parsePassport(
-      "{\"hcl\":\"#ae17e1\",\"iyr\":2013,\"eyr\":2024,\"ecl\":\"brn\",\"pid\":\"760753108\",\"byr\":1931,\"hgt\":179}",
+      Js.Json.parseExn(
+        "{\"hcl\":\"#ae17e1\",\"iyr\":2013,\"eyr\":2024,\"ecl\":\"brn\",\"pid\":\"760753108\",\"byr\":1931,\"hgt\":179}",
+      ),
     ),
   )
 })
@@ -46,7 +50,9 @@ test("Parse passport unsuccessfully due to a missing prop", () => {
   passportResultEqual(
     Error(Parser.PropertyNotFound("hgt")),
     Parser.parsePassport(
-      "{\"iyr\":2013,\"ecl\":\"amb\",\"cid\":\"350\",\"eyr\":2023,\"pid\":\"028048884\",\"hcl\":\"#cfa07d\",\"byr\":1929}",
+      Js.Json.parseExn(
+        "{\"iyr\":2013,\"ecl\":\"amb\",\"cid\":\"350\",\"eyr\":2023,\"pid\":\"028048884\",\"hcl\":\"#cfa07d\",\"byr\":1929}",
+      ),
     ),
   )
 })

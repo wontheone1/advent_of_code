@@ -15,6 +15,7 @@ type passport = {
 
 type parseError =
   | ObjectDecodingFailure
+  | RootArrayParsingFailure
   | NumberTypeError(string)
   | StringTypeError(string)
   | PropertyNotFound(string)
@@ -82,8 +83,7 @@ let initialPassport: passport = {
   cid: None,
 }
 
-let parsePassport = (passport: string): Belt.Result.t<passport, parseError> => {
-  let passport = Js.Json.parseExn(passport)
+let parsePassport = (passport: Js.Json.t): Belt.Result.t<passport, parseError> => {
   switch Js.Json.classify(passport) {
   | Js.Json.JSONObject(dict) =>
     Belt.Result.Ok(initialPassport)
