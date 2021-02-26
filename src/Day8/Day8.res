@@ -14,12 +14,7 @@ let log = Js.log
 
 let instructions = InstructionParser.parseInstructions(instructionLines)
 
-let initialState: InstructionModel.appState = {
-  isFinished: false,
-  accumulator: 0,
-  currentInstructionIndex: 0,
-  numberOfInstructionsVisited: Array.make(Array.length(instructions), 0),
-}
+let initialState = InstructionModel.makeInitialState(Array.length(instructions))
 
 let printAccumulatorBeforeAnyInstructionIsExecutedForSecondTime = (
   appState: InstructionModel.appState,
