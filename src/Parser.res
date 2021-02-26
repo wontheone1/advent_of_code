@@ -15,7 +15,7 @@ type passport = {
 
 type parseError =
   | ObjectDecodingFailure
-  | StringTypeError
+  | StringTypeError(string)
   | PropertyNotFound(string)
 
 let myPassport = {
@@ -74,7 +74,7 @@ let getProp = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<Js.Json.t, pa
 let stringDecoder = (dict: Js.Dict.t<Js.Json.t>, prop: string): Result.t<string, parseError> =>
   getProp(dict, prop)
   ->Result.map(json => Js.Json.decodeString(json))
-  ->Result.flatMap(opt => toResult(opt, StringTypeError))
+  ->Result.flatMap(opt => toResult(opt, StringTypeError(prop)))
 
 let initialPassport: passport = {
   byr: 0,
