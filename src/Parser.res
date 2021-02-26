@@ -18,17 +18,6 @@ type parseError =
   | StringTypeError(string)
   | PropertyNotFound(string)
 
-let myPassport = {
-  byr: 1999,
-  iyr: 2015,
-  eyr: 2025,
-  hgt: 175.5,
-  hcl: "#fffffd",
-  ecl: "#fffffd",
-  pid: "860033327",
-  cid: None,
-}
-
 let toResult = (opt: option<'a>, err: 'b): Result.t<'a, 'b> =>
   switch opt {
   | None => Result.Error(err)
