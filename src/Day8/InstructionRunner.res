@@ -5,8 +5,7 @@ let rec runInstruction = (appState: InstructionModel.appState, instructions) => 
   if appState.isFinished {
     appState
   } else {
-    let instructionToRun = instructions[appState.currentInstructionIndex]
-    switch instructionToRun {
+    switch instructions[appState.currentInstructionIndex] {
     | None => {
         ...appState,
         isFinished: true,
