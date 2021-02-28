@@ -21,12 +21,9 @@ let parseInstructions = (instructionLines: string): array<InstructionModel.instr
     if Array.length(instruction) != 2 {
       raise(InvalidInstruction)
     }
-    let maybeOpArg = Option.flatMap(instruction[0], op =>
-      Option.map(instruction[1], arg => instructionFromInstructionTuple((op, arg)))
-    )
-    switch maybeOpArg {
-    | None => raise(InvalidInstruction)
-    | Some(instruction) => instruction
+    switch (instruction[0], instruction[1]) {
+    | (Some(op), Some(arg)) => instructionFromInstructionTuple((op, arg))
+    | _ => raise(InvalidInstruction)
     }
   })
 }
