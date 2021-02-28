@@ -13,12 +13,10 @@ let instructionFromInstructionTuple = ((instruction, arg)) => {
   }
 }
 
-let parseInstructions = (instructionLines: Js.String2.t): array<
-  InstructionModel.instructionKind,
-> => {
+let parseInstructions = (instructionLines: string): array<InstructionModel.instructionKind> => {
   Js.String2.splitByRe(instructionLines, %re("/\\n/"))
   ->ArrayUtil.removeNones
-  ->Array.map((instructionLine: Js.String2.t) => {
+  ->Array.map((instructionLine: string) => {
     let instruction = Js.String2.splitByRe(instructionLine, %re("/\s/"))->ArrayUtil.removeNones
     if Array.length(instruction) != 2 {
       raise(InvalidInstruction)
