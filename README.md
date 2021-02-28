@@ -17,5 +17,5 @@ npm install
 ## Run
 
 ```sh
-node src/Demo.bs.js
+npm run node-run
 ```

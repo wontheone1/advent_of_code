@@ -6,7 +6,8 @@
     "clean": "bsb -clean-world",
     "start": "bsb -make-world -w",
     "test": "retest src/**/*.bs.js",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "node-run": "nodemon src/Day4.bs.js"
   },
   "watch": {
     "test": "src/**/*.bs.js"
