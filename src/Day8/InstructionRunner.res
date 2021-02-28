@@ -3,60 +3,51 @@ open InstructionModel
 
 let reducer = (action, appState) => {
   switch action {
-  | None => {
-      ...appState,
-      isFinished: true,
-    }
+  | None => appState
   | Some(instruction) => {
       let numberOfCurrentInstructionVisited = Option.getWithDefault(
         appState.numberOfInstructionsVisited[appState.currentInstructionIndex],
         0,
       )
-      if numberOfCurrentInstructionVisited > 0 {
-        {
-          ...appState,
-          isFinished: true,
+
+      switch instruction {
+      | NoOp => {
+          ignore(
+            appState.numberOfInstructionsVisited[
+              appState.currentInstructionIndex
+            ] =
+              numberOfCurrentInstructionVisited + 1,
+          )
+          {
+            ...appState,
+            currentInstructionIndex: appState.currentInstructionIndex + 1,
+          }
         }
-      } else {
-        switch instruction {
-        | NoOp => {
-            ignore(
-              appState.numberOfInstructionsVisited[
-                appState.currentInstructionIndex
-              ] =
-                numberOfCurrentInstructionVisited + 1,
-            )
-            {
-              ...appState,
-              currentInstructionIndex: appState.currentInstructionIndex + 1,
-            }
-          }
 
-        | Accumulate(arg) => {
-            ignore(
-              appState.numberOfInstructionsVisited[
-                appState.currentInstructionIndex
-              ] =
-                numberOfCurrentInstructionVisited + 1,
-            )
-            {
-              ...appState,
-              currentInstructionIndex: appState.currentInstructionIndex + 1,
-              accumulator: appState.accumulator + arg,
-            }
+      | Accumulate(arg) => {
+          ignore(
+            appState.numberOfInstructionsVisited[
+              appState.currentInstructionIndex
+            ] =
+              numberOfCurrentInstructionVisited + 1,
+          )
+          {
+            ...appState,
+            currentInstructionIndex: appState.currentInstructionIndex + 1,
+            accumulator: appState.accumulator + arg,
           }
+        }
 
-        | Jump(arg) => {
-            ignore(
-              appState.numberOfInstructionsVisited[
-                appState.currentInstructionIndex
-              ] =
-                numberOfCurrentInstructionVisited + 1,
-            )
-            {
-              ...appState,
-              currentInstructionIndex: appState.currentInstructionIndex + arg,
-            }
+      | Jump(arg) => {
+          ignore(
+            appState.numberOfInstructionsVisited[
+              appState.currentInstructionIndex
+            ] =
+              numberOfCurrentInstructionVisited + 1,
+          )
+          {
+            ...appState,
+            currentInstructionIndex: appState.currentInstructionIndex + arg,
           }
         }
       }
@@ -64,10 +55,24 @@ let reducer = (action, appState) => {
   }
 }
 
-let rec runInstruction = (appState: InstructionModel.appState, instructions) => {
-  if appState.isFinished {
+let terminationTest = (appState: InstructionModel.appState, instructions) => {
+  let numberOfCurrentInstructionVisited = Option.getWithDefault(
+    appState.numberOfInstructionsVisited[appState.currentInstructionIndex],
+    0,
+  )
+
+  numberOfCurrentInstructionVisited > 0 ||
+    Option.isNone(instructions[appState.currentInstructionIndex])
+}
+
+let rec runInstruction = (terminationTest, appState: InstructionModel.appState, instructions) => {
+  if terminationTest(appState, instructions) {
     appState
   } else {
-    runInstruction(reducer(instructions[appState.currentInstructionIndex], appState), instructions)
+    runInstruction(
+      terminationTest,
+      reducer(instructions[appState.currentInstructionIndex], appState),
+      instructions,
+    )
   }
 }

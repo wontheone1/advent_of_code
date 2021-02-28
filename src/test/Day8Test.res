@@ -47,11 +47,11 @@ jmp -4
 acc +6")
   appStateEqual(
     InstructionRunner.runInstruction(
+      InstructionRunner.terminationTest,
       InstructionModel.makeInitialState(Belt_Array.length(instructions)),
       instructions,
     ),
     {
-      isFinished: true,
       accumulator: 5,
       currentInstructionIndex: 1,
       numberOfInstructionsVisited: [1, 1, 1, 1, 1, 0, 1, 1, 0],

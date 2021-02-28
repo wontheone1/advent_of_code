@@ -24,7 +24,11 @@ let printAccumulatorBeforeAnyInstructionIsExecutedForSecondTime = (
     string_of_int(appState.accumulator),
   )
 
-let finalState = InstructionRunner.runInstruction(initialState, instructions)
+let finalState = InstructionRunner.runInstruction(
+  InstructionRunner.terminationTest,
+  initialState,
+  instructions,
+)
 
 log(finalState)
 printAccumulatorBeforeAnyInstructionIsExecutedForSecondTime(finalState)
