@@ -10,14 +10,18 @@ let reducer = (action, appState) => {
         0,
       )
 
+      let increaseInstructionVisitedCounter = () => {
+        {
+          appState.numberOfInstructionsVisited[
+            appState.currentInstructionIndex
+          ] =
+            numberOfCurrentInstructionVisited + 1
+        }->ignore
+      }
+
       switch instruction {
       | NoOp => {
-          ignore(
-            appState.numberOfInstructionsVisited[
-              appState.currentInstructionIndex
-            ] =
-              numberOfCurrentInstructionVisited + 1,
-          )
+          increaseInstructionVisitedCounter()
           {
             ...appState,
             currentInstructionIndex: appState.currentInstructionIndex + 1,
@@ -25,12 +29,7 @@ let reducer = (action, appState) => {
         }
 
       | Accumulate(arg) => {
-          ignore(
-            appState.numberOfInstructionsVisited[
-              appState.currentInstructionIndex
-            ] =
-              numberOfCurrentInstructionVisited + 1,
-          )
+          increaseInstructionVisitedCounter()
           {
             ...appState,
             currentInstructionIndex: appState.currentInstructionIndex + 1,
@@ -39,12 +38,7 @@ let reducer = (action, appState) => {
         }
 
       | Jump(arg) => {
-          ignore(
-            appState.numberOfInstructionsVisited[
-              appState.currentInstructionIndex
-            ] =
-              numberOfCurrentInstructionVisited + 1,
-          )
+          increaseInstructionVisitedCounter()
           {
             ...appState,
             currentInstructionIndex: appState.currentInstructionIndex + arg,
