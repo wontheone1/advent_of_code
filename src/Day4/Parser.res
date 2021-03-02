@@ -99,10 +99,6 @@ let parsePassport = (passport: Js.Json.t): Belt.Result.t<passport, parseError> =
       ...obj,
       ecl: ecl,
     })
-    ->required("ecl", stringDecoder, dict, (obj, ecl) => {
-      ...obj,
-      ecl: ecl,
-    })
     ->required("pid", stringDecoder, dict, (obj, pid) => {
       ...obj,
       pid: pid,
