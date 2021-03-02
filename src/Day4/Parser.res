@@ -71,6 +71,22 @@ let initialPassport: passport = {
   cid: None,
 }
 
+let logFilterResults = (results: array<Belt.Result.t<'t, 'error>>) => {
+  Js.Array2.reduce(
+    results,
+    (acc, item) => {
+      switch item {
+      | Belt.Result.Ok(result) => Js.Array.concat([result], acc)
+      | Belt.Result.Error(error) => {
+          Js.log(error)
+          acc
+        }
+      }
+    },
+    [],
+  )
+}
+
 let parsePassport = (passport: Js.Json.t): Belt.Result.t<passport, parseError> => {
   switch Js.Json.classify(passport) {
   | Js.Json.JSONObject(dict) =>
@@ -115,11 +131,7 @@ let parsePassports = (passports: string): Belt.Result.t<list<passport>, parseErr
   let passports = Js.Json.parseExn(passports)
   switch Js.Json.classify(passports) {
   | Js.Json.JSONArray(array) =>
-    Ok(
-      array
-      ->Belt_Array.keepMap(passport => passport->parsePassport->OptionResult.toOption)
-      ->Belt_List.fromArray,
-    )
+    Ok(Belt_Array.map(array, parsePassport)->logFilterResults->Belt.List.fromArray)
   | _ => Error(RootArrayParsingFailure)
   }
 }
