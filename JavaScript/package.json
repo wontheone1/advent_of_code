@@ -1,0 +1,8 @@
+{
+  "name": "JavaScript",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "watch": "nodemon ./src/2018/Day1/index.js"
+  }
+}
