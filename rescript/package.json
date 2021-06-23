@@ -7,7 +7,7 @@
     "start": "bsb -make-world -w",
     "test": "retest src/**/*.bs.js",
     "watch": "npm-watch",
-    "node-run": "nodemon src/Day8/Day8.bs.js"
+    "node-run": "nodemon src/2020/Day4/Day4.bs.js"
   },
   "watch": {
     "test": "src/**/*.bs.js"
@@ -19,7 +19,7 @@
   "license": "MIT",
   "devDependencies": {
     "bs-platform": "*",
-    "rescript-test": "^0.6.3",
-    "npm-watch": "^0.7.0"
+    "npm-watch": "^0.7.0",
+    "rescript-test": "^0.6.3"
   }
 }
