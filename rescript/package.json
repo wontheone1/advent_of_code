@@ -7,7 +7,7 @@
     "start": "bsb -make-world -w",
     "test": "retest src/**/*.bs.js",
     "watch": "npm-watch",
-    "node-run": "nodemon src/2020/Day4/Day4.bs.js"
+    "node-run": "nodemon src/2018/Day1/Day1.bs.js"
   },
   "watch": {
     "test": "src/**/*.bs.js"
