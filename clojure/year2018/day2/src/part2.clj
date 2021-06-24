@@ -32,3 +32,4 @@
 ; run with
 ; cd year2018/day2
 ; clj -X part2/run
+; => "wlkigsqyfecjqqmnxaktdrhbz"

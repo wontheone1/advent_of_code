@@ -28,3 +28,4 @@
 ; run with
 ; cd year2018/day2
 ; clj -X part1/run
+; => 7776
