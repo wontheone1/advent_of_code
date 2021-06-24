@@ -1,13 +1,7 @@
 (ns solution)
 
 (def input
-  "abcdef
-  bababc
-  abbcde
-  abcccd
-  aabcdd
-  abcdee
-  ababab")
+  (slurp "../../../inputs/2018/Day2/input.txt"))
 
 (defn run [opts]
   (let [[times-two-of-letter-detected
