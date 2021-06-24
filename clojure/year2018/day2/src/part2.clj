@@ -1,7 +1,9 @@
-(ns part2)
+(ns part2
+  (:require [clojure.math.combinatorics :as combo]))
 
 (def input
-  (slurp "../../../inputs/2018/Day2/input.txt"))
+  (-> (slurp "../../../inputs/2018/Day2/input.txt")
+      clojure.string/split-lines))
 
 (defn string-differences [str1 str2]
   (->> (map (fn [char1 char2]
@@ -20,8 +22,12 @@
                str2)))
 
 (defn run [opts]
-  (prn (string-differences "fghij" "fauij")
-       (get-common-string-part "fghij" "fghij")))
+  (->
+    (loop [[first-combi & rest-combinations] (combo/combinations input 2)]
+        (if (= (apply string-differences first-combi) 1)
+          (apply get-common-string-part first-combi)
+          (recur rest-combinations)))
+    prn))
 
 ; run with
 ; cd year2018/day2
