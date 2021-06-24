@@ -15,8 +15,7 @@
                                                               1
                                                               0)])
                                                          #(group-by (fn [[_k v]] v) %)
-                                                         frequencies
-                                                         clojure.string/trim))
+                                                         frequencies))
                                               (reduce
                                                 (fn [[times-two-of-letter-detected
                                                       times-three-of-letter-detected]
