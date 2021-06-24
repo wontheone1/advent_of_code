@@ -1,4 +1,4 @@
-(ns solution)
+(ns part1)
 
 (def input
   (slurp "../../../inputs/2018/Day2/input.txt"))
@@ -28,4 +28,4 @@
 
 ; run with
 ; cd year2018/day2
-; clj -X solution/run
+; clj -X part1/run
