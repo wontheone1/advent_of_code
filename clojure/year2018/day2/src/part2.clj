@@ -21,13 +21,16 @@
                    ch))
                str2)))
 
+(defn solve [input]
+  (loop [[first-combi & rest-combinations] (combo/combinations input 2)]
+    (if (= (apply string-differences first-combi) 1)
+      (apply get-common-string-part first-combi)
+      (recur rest-combinations))))
+
 (defn run [opts]
-  (->
-    (loop [[first-combi & rest-combinations] (combo/combinations input 2)]
-        (if (= (apply string-differences first-combi) 1)
-          (apply get-common-string-part first-combi)
-          (recur rest-combinations)))
-    prn))
+  (-> input
+      solve
+      prn))
 
 ; run with
 ; cd year2018/day2
