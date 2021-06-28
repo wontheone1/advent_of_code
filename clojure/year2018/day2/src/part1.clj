@@ -6,7 +6,7 @@
 (def group-chars-by-frequencies
   (comp #(group-by (fn [[_ch freq]] freq) %) frequencies))
 
-(defn run [opts]
+(defn solve [input]
   (let [{:keys [twos threes]} (->> input
                                    clojure.string/split-lines
                                    (map group-chars-by-frequencies)
@@ -25,7 +25,12 @@
                                         :threes (+ threes three-detected)})
                                      {:twos   0
                                       :threes 0}))]
-    (prn (* twos threes))))
+    (* twos threes)))
+
+(defn run [opts]
+  (-> input
+      solve
+      prn))
 
 ; run with
 ; cd year2018/day2
