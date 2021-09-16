@@ -9,6 +9,7 @@
 
 (defn parse-claims [line]
   (let [[id start-position width&height] (clojure.string/split line #"\s@\s|:\s")
+        id (->> id next (apply str))
         start-position (->> (clojure.string/split start-position #",")
                             (mapv string->int))
         width&height (->> (clojure.string/split width&height #"x")
