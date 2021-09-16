@@ -38,3 +38,12 @@
     (apply str char-representaions)))
 
 (println (plot-claim ["1" [1 3] [4 4]]))
+
+(defn plot-claims [claims]
+  (let [plot-widths&heights (map get-plot-width&plot-height claims)
+        [map-width map-height] [(apply max (first plot-widths&heights)) (apply max (second plot-widths&heights))]]
+    [map-width map-height]))
+
+(plot-claims [["1" [1 3] [4 4]]
+              ["2" [3 1] [4 4]]
+              ["3" [5 5] [2 2]]])
