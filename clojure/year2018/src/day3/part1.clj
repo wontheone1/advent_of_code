@@ -26,13 +26,13 @@
 
 (defn plot-claim [claim]
   (let [[id [start-x start-y]] claim
-        [plot-weight plot-height] (get-plot-width&plot-height claim)
+        [plot-width plot-height] (get-plot-width&plot-height claim)
         char-representaions (for [y (range plot-height)
-                                  x (range plot-weight)]
+                                  x (range plot-width)]
                               (let [ch (if (and (>= x start-x) (>= y start-y))
                                          id
                                          ".")]
-                                (if (= x (dec plot-weight))
+                                (if (= x (dec plot-width))
                                   (str ch \newline)
                                   ch)))]
     (apply str char-representaions)))
