@@ -18,9 +18,15 @@
 
 (def claims (map parse-claims input))
 
-(defn plot-claim [id [start-x start-y] [claim-width claim-height]]
-  (let [plot-height (+ start-y claim-height)
-        plot-weight (+ start-x claim-width)
+(defn get-plot-width&plot-height [claim]
+  (let [[_ [start-x start-y] [claim-width claim-height]] claim]
+    [(+ start-x claim-width) (+ start-y claim-height)]))
+
+(get-plot-width&plot-height ["1" [1 3] [4 4]])
+
+(defn plot-claim [claim]
+  (let [[id [start-x start-y]] claim
+        [plot-weight plot-height] (get-plot-width&plot-height claim)
         char-representaions (for [y (range plot-height)
                                   x (range plot-weight)]
                               (let [ch (if (and (>= x start-x) (>= y start-y))
@@ -31,4 +37,4 @@
                                   ch)))]
     (apply str char-representaions)))
 
-(println (plot-claim "1" [1 3] [4 4]))
+(println (plot-claim ["1" [1 3] [4 4]]))
