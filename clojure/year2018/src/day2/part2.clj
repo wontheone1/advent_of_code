@@ -1,8 +1,8 @@
-(ns part2
+(ns day2.part2
   (:require [clojure.math.combinatorics :as combo]))
 
 (def input
-  (-> (slurp "../../../inputs/2018/Day2/input.txt")
+  (-> (slurp "../../inputs/2018/Day2/input.txt")
       clojure.string/split-lines))
 
 (defn string-differences [str1 str2]
