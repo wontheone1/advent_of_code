@@ -42,11 +42,11 @@
 (defn plot-claims [claims]
   (let [plot-widths&heights (map get-plot-width&plot-height claims)
         [map-width map-height] [(apply max (first plot-widths&heights)) (apply max (second plot-widths&heights))]
-        char-representations (for [y (range map-height)
-                                   x (range map-width)]
-                               (if (= x (dec map-width))
-                                 (str "." \newline)
-                                 "."))]
+        char-representations (into [] (for [y (range map-height)
+                                            x (range map-width)]
+                                        (if (= x (dec map-width))
+                                          (str "." \newline)
+                                          ".")))]
     char-representations))
 
 (defn print-char-representations [char-representations]
