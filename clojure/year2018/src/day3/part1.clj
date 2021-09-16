@@ -65,6 +65,36 @@
 (update-char-in-representations "1" 3 ["." "." "." "2\n"
                                        "." "." "." ".\n"])
 
+(defn update-char-representations-with-claim [map-width char-representations claim]
+  (let [[id [start-x start-y]] claim
+        [plot-width plot-height] (get-plot-width&plot-height claim)]
+    (loop [x start-x
+           y start-y
+           char-representations char-representations]
+      (cond
+        (< x (dec plot-width))
+        (recur (inc x)
+               y
+               (update-char-in-representations id (+ (* y map-width) x) char-representations))
+
+        (< y (dec plot-height))
+        (recur start-x
+               (inc y)
+               (update-char-in-representations id (+ (* y map-width) x) char-representations))
+
+        :else
+        (update-char-in-representations id (+ (* y map-width) x) char-representations)))))
+
+(update-char-representations-with-claim 4
+                                        ["." "." "." ".\n"
+                                         "." "." "." ".\n"]
+                                        ["1" [0 0] [2 2]])
+
+(update-char-representations-with-claim 4
+                                        ["." "2" "." "3\n"
+                                         "." "2" "." "3\n"]
+                                        ["1" [1 0] [3 2]])
+
 (defn plot-claims [claims]
   (let [plot-widths&heights (map get-plot-width&plot-height claims)
         [map-width map-height] [(apply max (first plot-widths&heights)) (apply max (second plot-widths&heights))]
