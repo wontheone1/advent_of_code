@@ -41,9 +41,18 @@
 
 (defn plot-claims [claims]
   (let [plot-widths&heights (map get-plot-width&plot-height claims)
-        [map-width map-height] [(apply max (first plot-widths&heights)) (apply max (second plot-widths&heights))]]
-    [map-width map-height]))
+        [map-width map-height] [(apply max (first plot-widths&heights)) (apply max (second plot-widths&heights))]
+        char-representations (for [y (range map-height)
+                                   x (range map-width)]
+                               (if (= x (dec map-width))
+                                 (str "." \newline)
+                                 "."))]
+    char-representations))
 
-(plot-claims [["1" [1 3] [4 4]]
-              ["2" [3 1] [4 4]]
-              ["3" [5 5] [2 2]]])
+(defn print-char-representations [char-representations]
+  (println (apply str char-representations)))
+
+(-> (plot-claims [["1" [1 3] [4 4]]
+                  ["2" [3 1] [4 4]]
+                  ["3" [5 5] [2 2]]])
+    (print-char-representations))
