@@ -39,6 +39,32 @@
 
 (println (plot-claim ["1" [1 3] [4 4]]))
 
+(defn update-char-in-representations [id index char-representations]
+  (update char-representations
+          index
+          (fn [ch]
+            (cond
+              (= "." ch)
+              id
+
+              (= ".\n" ch)
+              (str id \newline)
+
+              (clojure.string/ends-with? ch "\n")
+              "X\n"
+
+              :else
+              "X"))))
+
+(update-char-in-representations "1" 2 ["." "." "." ".\n"
+                                       "." "." "." ".\n"])
+(update-char-in-representations "1" 3 ["." "." "." ".\n" "."
+                                       "." "." ".\n"])
+(update-char-in-representations "1" 2 ["." "." "2" ".\n"
+                                       "." "." "." ".\n"])
+(update-char-in-representations "1" 3 ["." "." "." "2\n"
+                                       "." "." "." ".\n"])
+
 (defn plot-claims [claims]
   (let [plot-widths&heights (map get-plot-width&plot-height claims)
         [map-width map-height] [(apply max (first plot-widths&heights)) (apply max (second plot-widths&heights))]
