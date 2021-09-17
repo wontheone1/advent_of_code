@@ -103,11 +103,20 @@
                                         (if (= x (dec map-width))
                                           (str "." \newline)
                                           ".")))]
-    char-representations))
+    (loop [[claim & rest-claims] claims
+           char-representations char-representations]
+      (if (seq rest-claims)
+        (recur rest-claims (update-char-representations-with-claim map-width char-representations claim))
+        (update-char-representations-with-claim map-width char-representations claim)))))
+
+
 
 (defn print-char-representations [char-representations]
   (println (apply str char-representations)))
 
+;#1 @ 1,3: 4x4
+;#2 @ 3,1: 4x4
+;#3 @ 5,5: 2x2
 (-> (plot-claims [["1" [1 3] [4 4]]
                   ["2" [3 1] [4 4]]
                   ["3" [5 5] [2 2]]])
