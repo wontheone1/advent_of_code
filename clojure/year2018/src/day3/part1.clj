@@ -97,7 +97,7 @@
 
 (defn plot-claims [claims]
   (let [plot-widths&heights (map get-plot-width&plot-height claims)
-        [map-width map-height] [(apply max (first plot-widths&heights)) (apply max (second plot-widths&heights))]
+        [map-width map-height] [(apply max (map first plot-widths&heights)) (apply max (map second plot-widths&heights))]
         char-representations (into [] (for [y (range map-height)
                                             x (range map-width)]
                                         (if (= x (dec map-width))
