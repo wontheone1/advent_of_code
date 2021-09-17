@@ -120,18 +120,18 @@
                   ["3" [5 5] [2 2]]])
     (print-char-representations))
 
-(defn count-overwrapping-claims [char-representations]
+(defn count-overlapping-claims [char-representations]
   (count (filter {"X" "X\n"} char-representations)))
 
 (-> (plot-claims [["1" [1 3] [4 4]]
                   ["2" [3 1] [4 4]]
                   ["3" [5 5] [2 2]]])
-    (count-overwrapping-claims))
+    (count-overlapping-claims))
 
 (defn solve []
   (->> claims
       (plot-claims)
-      (count-overwrapping-claims)
-      (println "Area of fabric with overwrapping claims: ")))
+      (count-overlapping-claims)
+      (println "Area of fabric with overlapping claims: ")))
 
 '(solve)
