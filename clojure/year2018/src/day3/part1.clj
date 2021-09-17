@@ -127,3 +127,11 @@
                   ["2" [3 1] [4 4]]
                   ["3" [5 5] [2 2]]])
     (count-overwrapping-claims))
+
+(defn solve []
+  (->> claims
+      (plot-claims)
+      (count-overwrapping-claims)
+      (println "Area of fabric with overwrapping claims: ")))
+
+'(solve)
