@@ -109,8 +109,6 @@
         (recur rest-claims (update-char-representations-with-claim map-width char-representations claim))
         (update-char-representations-with-claim map-width char-representations claim)))))
 
-
-
 (defn print-char-representations [char-representations]
   (println (apply str char-representations)))
 
@@ -121,3 +119,11 @@
                   ["2" [3 1] [4 4]]
                   ["3" [5 5] [2 2]]])
     (print-char-representations))
+
+(defn count-overwrapping-claims [char-representations]
+  (count (filter {"X" "X\n"} char-representations)))
+
+(-> (plot-claims [["1" [1 3] [4 4]]
+                  ["2" [3 1] [4 4]]
+                  ["3" [5 5] [2 2]]])
+    (count-overwrapping-claims))
