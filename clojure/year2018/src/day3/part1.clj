@@ -1,5 +1,9 @@
 (ns day3.part1)
 
+; Note: Solution was DELIBERATELY written in a NAIVE way, so that steps are easier to understand.
+;       I believe this resulted in far from the most efficient solution. (I believe there must be
+;       far more efficient solutions)
+
 (def input
   (-> (slurp "../../inputs/2018/Day3/input.txt")
       (clojure.string/split-lines)))
