@@ -20,6 +20,8 @@
                           (mapv string->int))]
     [id start-position width&height]))
 
+(parse-claims "#1 @ 483,830: 24x18")
+
 (def claims (map parse-claims input))
 
 (defn get-plot-width&plot-height [claim]
