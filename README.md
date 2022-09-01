@@ -17,6 +17,11 @@ Status is "work in progress"
 Part 1: 1
 Part 2: 4
 
+### [2018-04](https://adventofcode.com/2018/day/4)
+
+Part 1:
+Part 2:
+
 ### 2020-04
 
 Part 1: 6
