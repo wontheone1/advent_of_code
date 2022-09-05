@@ -117,8 +117,14 @@
                                                                               v))})
                                              sleep-records-by-guard-id)
         guard-id-slept-most (:guard-id (apply max-key :total-sleep-minute total-sleep-minutes-by-guard-id))
-        sleep-records-of-guard-who-slept-most (get sleep-records-by-guard-id guard-id-slept-most)]
-    sleep-records-of-guard-who-slept-most))
+        sleep-records-of-guard-who-slept-most (get sleep-records-by-guard-id guard-id-slept-most)
+        sleep-minute-tracker-of-guard-who-slept-most (reflect-sleep-records
+                                                      sleep-minute-frequency-tracker
+                                                      sleep-records-of-guard-who-slept-most)
+        minute-the-most-sleeping-guard-most-often-slept (.indexOf
+                                                         sleep-minute-tracker-of-guard-who-slept-most
+                                                         (apply max sleep-minute-tracker-of-guard-who-slept-most))]
+    minute-the-most-sleeping-guard-most-often-slept))
 
 (comment
  (solve input))
