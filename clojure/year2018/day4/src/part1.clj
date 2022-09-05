@@ -72,11 +72,25 @@
     :aggregated-sleep-record []}
    sorted-parsed-lines))
 
+(defn group-sleep-records-by-guard-id [aggregated-sleep-records]
+  (group-by :guard-no aggregated-sleep-records))
+
 (defn solve [input]
-  (->> input
-       sort
-       (map parse-line)
-       aggregate-sleep-records))
+  (let [sleep-records-by-guard-id (->> input
+                                       sort
+                                       (map parse-line)
+                                       aggregate-sleep-records
+                                       :aggregated-sleep-record
+                                       group-sleep-records-by-guard-id)
+        total-sleep-minutes-by-guard-id (map (fn [[k v]]
+                                               {:guard-id k
+                                                :total-sleep-minute (apply + (map
+                                                                              (fn [{:keys [sleep-start-time
+                                                                                           sleep-end-time]}]
+                                                                                (- sleep-end-time sleep-start-time))
+                                                                              v))})
+                                             sleep-records-by-guard-id)]
+    total-sleep-minutes-by-guard-id))
 
 (comment
  (solve input))
