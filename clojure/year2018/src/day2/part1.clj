@@ -1,7 +1,7 @@
-(ns part1)
+(ns day2.part1)
 
 (def input
-  (slurp "../../../inputs/2018/Day2/input.txt"))
+  (slurp "../../inputs/2018/Day2/input.txt"))
 
 (def group-chars-by-frequencies
   (comp #(group-by (fn [[_ch freq]] freq) %) frequencies))
