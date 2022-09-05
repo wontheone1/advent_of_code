@@ -59,7 +59,7 @@
        (merge
         agg
         {
-         ; :current-date timestamp-date-part (Data shows that guards don't sleep overnight. they only sleep from 00:00 ~ 01:00)
+         ; :current-date timestamp-date-part (Data shows that guards don't sleep overnight. they only sleep from 00:00 ~ 00:59)
          ; :current-sleep-start nil (if :falls-asleep and :wakes-up alternate as expected, then no need to clean up)
          :aggregated-sleep-record (conj (:aggregated-sleep-record agg)
                                         {:guard-no (:current-guard-no agg)
