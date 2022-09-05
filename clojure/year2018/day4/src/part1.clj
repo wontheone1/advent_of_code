@@ -75,6 +75,32 @@
 (defn group-sleep-records-by-guard-id [aggregated-sleep-records]
   (group-by :guard-no aggregated-sleep-records))
 
+(def sleep-minute-frequency-tracker
+  (vec (repeat 60 0)))
+
+(defn reflect-sleep-record [sleep-minute-tracker sleep-record]
+  (reduce (fn [sleep-minute-tracker slept-minute]
+            (update sleep-minute-tracker slept-minute inc))
+          sleep-minute-tracker
+          (range (:sleep-start-time sleep-record)
+                 (:sleep-end-time sleep-record))))
+
+(comment
+ (reflect-sleep-record
+  sleep-minute-frequency-tracker {:guard-no 2953, :date "1518-03-19", :sleep-start-time 37, :sleep-end-time 41}))
+
+(defn reflect-sleep-records [sleep-minute-tracker sleep-records]
+  (reduce (fn [sleep-minute-tracker sleep-record]
+            (reflect-sleep-record sleep-minute-tracker sleep-record))
+   sleep-minute-tracker
+   sleep-records))
+
+(comment
+ (reflect-sleep-records
+  sleep-minute-frequency-tracker
+  [{:guard-no 2953, :date "1518-03-19", :sleep-start-time 37, :sleep-end-time 41}
+   {:guard-no 2953, :date "1518-04-09", :sleep-start-time 31, :sleep-end-time 47}]))
+
 (defn solve [input]
   (let [sleep-records-by-guard-id (->> input
                                        sort
