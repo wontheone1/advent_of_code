@@ -124,7 +124,8 @@
         minute-the-most-sleeping-guard-most-often-slept (.indexOf
                                                          sleep-minute-tracker-of-guard-who-slept-most
                                                          (apply max sleep-minute-tracker-of-guard-who-slept-most))]
-    minute-the-most-sleeping-guard-most-often-slept))
+    (* guard-id-slept-most
+       minute-the-most-sleeping-guard-most-often-slept)))
 
 (comment
  (solve input))
