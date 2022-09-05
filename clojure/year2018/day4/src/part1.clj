@@ -90,8 +90,9 @@
                                                                                 (- sleep-end-time sleep-start-time))
                                                                               v))})
                                              sleep-records-by-guard-id)
-        guard-id-slept-most (:guard-id (apply max-key :total-sleep-minute total-sleep-minutes-by-guard-id))]
-    guard-id-slept-most))
+        guard-id-slept-most (:guard-id (apply max-key :total-sleep-minute total-sleep-minutes-by-guard-id))
+        sleep-records-of-guard-who-slept-most (get sleep-records-by-guard-id guard-id-slept-most)]
+    sleep-records-of-guard-who-slept-most))
 
 (comment
  (solve input))
